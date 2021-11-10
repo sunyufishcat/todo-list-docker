@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  ui:
+    build: frontend
+    image: todo-list:1.0
+    container_name: todo-list
+    ports:
+      - '3000:3000'
+    depends_on:
+      - app-host
+    networks:
+      - frontend
+  app-host:
+    build: backend
+    image: app:1.0
+    container_name: app
+    ports:
+      - '8080:8080'
+    depends_on:
+      - mysql-host
+    networks:
+      - frontend
+      - backend
+  mysql-host:
+    image: mysql:5.7
+    container_name: mysql
+    environment:
+      MYSQL_DATABASE: 'demo'
+      MYSQL_USER: 'demo'
+      MYSQL_PASSWORD: '123456'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '3306:3306'
+    networks:
+      - backend
+    volumes:
+      - $PWD/data:/var/lib/mysql
+networks:
+  frontend:
+  backend:
